@@ -2,7 +2,7 @@ const express = require('express')
 const compression = require('compression')
 const bodyParser = require('body-parser')
 const pino = require('express-pino-logger')()
-const process = require('process');
+const process = require('process')
 
 const networkManager = require('./networkManager')
 const aboutPage = require('./aboutInfo')
@@ -121,7 +121,7 @@ app.get('/api/ntripconfig', (req, res) => {
   ntripClient.getSettings((host, port, mountpoint, username, password, active) => {
     res.setHeader('Content-Type', 'application/json')
     // console.log(JSON.stringify({host: host,  port: port, mountpoint: mountpoint, username: username, password: password}))
-    res.send(JSON.stringify({ host: host, port: port, mountpoint: mountpoint, username: username, password: password, active: active }))
+    res.send(JSON.stringify({ host, port, mountpoint, username, password, active }))
   })
 })
 
@@ -129,7 +129,7 @@ app.get('/api/ntripconfig', (req, res) => {
 app.get('/api/cloudinfo', (req, res) => {
   cloud.getSettings((doBinUpload, binUploadLink, syncDeletions, pubkey) => {
     res.setHeader('Content-Type', 'application/json')
-    res.send(JSON.stringify({ doBinUpload: doBinUpload, binUploadLink: binUploadLink, syncDeletions: syncDeletions, pubkey: pubkey }))
+    res.send(JSON.stringify({ doBinUpload, binUploadLink, syncDeletions, pubkey }))
   })
 })
 
@@ -147,7 +147,7 @@ app.post('/api/binlogupload', [check('doBinUpload').isBoolean(),
     // send back refreshed settings
     cloud.getSettings((doBinUpload, binUploadLink, syncDeletions) => {
       res.setHeader('Content-Type', 'application/json')
-      res.send(JSON.stringify({ doBinUpload: doBinUpload, binUploadLink: binUploadLink, syncDeletions: syncDeletions }))
+      res.send(JSON.stringify({ doBinUpload, binUploadLink, syncDeletions }))
     })
   }
 })
@@ -157,7 +157,7 @@ app.get('/api/adhocadapters', (req, res) => {
   adhocManager.getAdapters((err, netDeviceList, netDeviceSelected, settings) => {
     if (!err) {
       res.setHeader('Content-Type', 'application/json')
-      const ret = { netDevice: netDeviceList, netDeviceSelected: netDeviceSelected, curSettings: settings }
+      const ret = { netDevice: netDeviceList, netDeviceSelected, curSettings: settings }
       res.send(JSON.stringify(ret))
     } else {
       res.setHeader('Content-Type', 'application/json')
@@ -187,11 +187,11 @@ app.post('/api/adhocadaptermodify', [check('settings.isActive').isBoolean(),
     adhocManager.setAdapter(req.body.toState, req.body.netDeviceSelected, req.body.settings, (err, netDeviceList, netDeviceSelected, settings) => {
       if (!err) {
         res.setHeader('Content-Type', 'application/json')
-        const ret = { netDevice: netDeviceList, netDeviceSelected: netDeviceSelected, curSettings: settings }
+        const ret = { netDevice: netDeviceList, netDeviceSelected, curSettings: settings }
         res.send(JSON.stringify(ret))
       } else {
         res.setHeader('Content-Type', 'application/json')
-        const ret = { netDevice: netDeviceList, netDeviceSelected: netDeviceSelected, curSettings: settings, error: err }
+        const ret = { netDevice: netDeviceList, netDeviceSelected, curSettings: settings, error: err }
         res.send(JSON.stringify(ret))
         winston.error('Error in /api/adhocadapters ', { message: err })
       }
@@ -217,7 +217,7 @@ app.post('/api/ntripmodify', [check('active').isBoolean(),
   ntripClient.getSettings((host, port, mountpoint, username, password, active) => {
     res.setHeader('Content-Type', 'application/json')
     // console.log(JSON.stringify({host: host,  port: port, mountpoint: mountpoint, username: username, password: password}))
-    res.send(JSON.stringify({ host: host, port: port, mountpoint: mountpoint, username: username, password: password, active: active }))
+    res.send(JSON.stringify({ host, port, mountpoint, username, password, active }))
   })
 })
 
@@ -273,7 +273,7 @@ app.get('/api/softwareinfo', (req, res) => {
   aboutPage.getSoftwareInfo((OSV, NodeV, RpanionV, hostname, err) => {
     if (!err) {
       res.setHeader('Content-Type', 'application/json')
-      res.send(JSON.stringify({ OSVersion: OSV, Nodejsversion: NodeV, rpanionversion: RpanionV, hostname: hostname}))
+      res.send(JSON.stringify({ OSVersion: OSV, Nodejsversion: NodeV, rpanionversion: RpanionV, hostname }))
       winston.info('/api/softwareinfo OS:' + OSV + ' Node:' + NodeV + ' Rpanion:' + RpanionV + ' Hostname: ' + hostname)
     } else {
       res.setHeader('Content-Type', 'application/json')
@@ -375,7 +375,7 @@ app.get('/api/FCDetails', (req, res) => {
         mavDialects: mavdialects,
         mavDialectSelected: seldialect,
         baudRateSelected: selbaud,
-        enableTCP: enableTCP
+        enableTCP
       }))
     } else {
       res.setHeader('Content-Type', 'application/json')
