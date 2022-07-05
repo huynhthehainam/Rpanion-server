@@ -30,7 +30,7 @@ class cloudUpload {
       if (this.options.doBinUpload) {
         console.log('Doing bin file. MiSmart')
         const rsync = new Rsync()
-          .shell('ssh -i pems/svgh-mismart.pem ')
+          .shell('ssh -i pems/svgh-mismart.pem -o StrictHostKeyChecking=no')
           .flags('avzP')
           .source(this.binlogfolder + '/')
           .destination(this.options.binUploadLink)

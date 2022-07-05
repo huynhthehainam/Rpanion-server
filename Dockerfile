@@ -11,18 +11,19 @@ RUN apt-get purge openresolv dhcpcd5
 RUN pip3 install meson
 RUN pip3 install netifaces --user
 RUN apt-get install -y build-essential
+RUN apt-get install -y rsync
 # RUN apt-get install -y gcc-9 g++-9
 
 COPY . .
-RUN git submodule init && git submodule update
 WORKDIR /src/modules/mavlink-router
-
 RUN rm -rf /src/modules/mavlink-router/build
 RUN meson setup build . --buildtype=release
 RUN ninja -C build
 RUN ninja -C build install
 
 WORKDIR /src
+RUN chmod 400 pems/*.pem
+RUN npm i
 RUN npm run build
 ENV PORT=5000
 ENV HOST=0.0.0.0
