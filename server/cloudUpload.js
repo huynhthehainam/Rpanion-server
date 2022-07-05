@@ -28,7 +28,7 @@ class cloudUpload {
     this.intervalObj = setInterval(() => {
       // console.log('Upload interval')
       if (this.options.doBinUpload) {
-        console.log('Doing binfile')
+        console.log('Doing bin file. MiSmart')
         const rsync = new Rsync()
           .shell('ssh -i pems/svgh-mismart.pem ')
           .flags('avzP')

@@ -84,6 +84,7 @@ class mavManager {
 
     // what to do when we get a message
     this.mav.on('message', (msg) => {
+      // console.log(this.targetSystem, msg)
       if (msg._id === -1) {
         // bad message - can't process here any further
         return
@@ -92,9 +93,11 @@ class mavManager {
       // set the target system/comp ID if needed
       // ensure it's NOT a GCS, as mavlink-router will sometimes route
       // messages from connected GCS's
+
       if (this.targetSystem === null && msg._name === 'HEARTBEAT' && msg.type !== 6) {
         console.log('Vehicle is S/C: ' + msg._header.srcSystem + '/' + msg._header.srcComponent)
         winston.info('Vehicle is S/C: ' + msg._header.srcSystem + '/' + msg._header.srcComponent)
+
         this.targetSystem = msg._header.srcSystem
         this.targetComponent = msg._header.srcComponent
 
@@ -105,7 +108,6 @@ class mavManager {
         // don't use packets from other systems or components in Rpanion-server
         return
       }
-
       // raise event for external objects
       this.eventEmitter.emit('gotMessage', msg)
 
@@ -113,6 +115,7 @@ class mavManager {
       this.timeofLastPacket = (Date.now().valueOf())
       if (msg._name === 'HEARTBEAT') {
         // System status
+
         this.statusFWName = msg.autopilot
         this.statusVehType = msg.type
 
@@ -246,7 +249,7 @@ class mavManager {
 
   sendDSRequest () {
     // create a datastream request packet
-    // console.log("Sent DS");
+    // console.log('Sent DS')
     const msg = new this.mavmsg.messages.request_data_stream(this.targetSystem, this.targetComponent, this.mavmsg.MAV_DATA_STREAM_ALL, 1, 1)
     this.sendData(msg.pack(this.mav))
   }

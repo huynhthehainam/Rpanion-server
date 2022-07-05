@@ -98,7 +98,7 @@ class FCDetails {
     // check mavlink-router is installed
     const ls = spawnSync('which', ['mavlink-routerd'])
     console.log(ls.stdout.toString())
-    if (ls.stdout.toString().trim() == '') {
+    if (ls.stdout.toString().trim() === '') {
       return false
     } else {
       return true

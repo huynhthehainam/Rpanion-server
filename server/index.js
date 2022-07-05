@@ -402,7 +402,7 @@ app.post('/api/FCModify', [check('device').isJSON(), check('baud').isJSON(), che
     winston.error('Bad POST vars in /api/FCModify', { message: errors.array() })
     return res.status(422).json({ errors: errors.array() })
   }
-
+  console.log('modify telemetry')
   fcManager.startStopTelemetry(JSON.parse(req.body.device), JSON.parse(req.body.baud), JSON.parse(req.body.mavversion), JSON.parse(req.body.mavdialect), req.body.enableTCP, (err, isSuccess) => {
     if (!err) {
       res.setHeader('Content-Type', 'application/json')

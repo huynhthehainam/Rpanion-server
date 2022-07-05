@@ -1,0 +1,13 @@
+version: '3.7'
+
+networks:
+  main_bridge:
+    driver: bridge
+
+services:
+  web:
+    build: .
+    ports:
+      - 8000:5000
+    networks:
+      - main_bridge
