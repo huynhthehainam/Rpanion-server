@@ -362,7 +362,7 @@ class FCDetails {
 
     const Binding = autoDetect()
     const ports = await Binding.list()
-
+    console.log('ports', ports)
     for (let i = 0, len = ports.length; i < len; i++) {
       if (ports[i].pnpId !== undefined) {
         // usb-ArduPilot_Pixhawk1-1M_32002A000847323433353231-if00

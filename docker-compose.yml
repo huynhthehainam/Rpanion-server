@@ -7,10 +7,12 @@ networks:
 services:
   web:
     build: .
+    restart: always 
     ports:
       - 8000:5000
     networks:
       - main_bridge
+    privileged: true
     devices:
       - "/dev/ttyACM0:/dev/ttyACM0"
       - "/dev/ttyACM1:/dev/ttyACM1"
