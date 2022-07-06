@@ -11,14 +11,15 @@ import NetworkClients from './networkClients.js'
 import NTRIPPage from './ntripcontroller.js'
 import AdhocConfig from './adhocwifi.js'
 import CloudConfig from './cloud.js'
-
-function AppRouter() {
+import FlightHubConfig from './flightHubConfig'
+function AppRouter () {
   return (
     <div id="wrapper" className="d-flex">
       <div id="sidebar-wrapper" className="bg-light border-right">
         <div id="sidebarheading" className="sidebar-heading">Rpanion Web UI</div>
         <div id="sidebar-items" className="list-group list-group-flush">
           <Link className='list-group-item list-group-item-action bg-light' to="/">Home</Link>
+          <Link className='list-group-item list-group-item-action bg-light' to="/flighthub">Flight Hub Config</Link>
           <Link className='list-group-item list-group-item-action bg-light' to="/flightlogs">Flight Logs</Link>
           <Link className='list-group-item list-group-item-action bg-light' to="/controller">Flight Controller</Link>
           <Link className='list-group-item list-group-item-action bg-light' to="/ntrip">NTRIP Config</Link>
@@ -42,6 +43,7 @@ function AppRouter() {
             <Route exact path="/flightlogs" element={<LogBrowser />} />
             <Route exact path="/apclients" element={<NetworkClients />} />
             <Route exact path="/ntrip" element={<NTRIPPage />} />
+            <Route exact path="/flighthub" element={<FlightHubConfig />} />
             <Route exact path="/adhoc" element={<AdhocConfig />} />
             <Route exact path="/cloud" element={<CloudConfig />} />
             <Route element={NoMatch} />
@@ -52,7 +54,7 @@ function AppRouter() {
   )
 }
 
-function NoMatch({ location }) {
+function NoMatch ({ location }) {
   return (
     <div>
       <h3>

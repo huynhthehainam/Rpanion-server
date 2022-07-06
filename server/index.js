@@ -13,6 +13,7 @@ const networkClients = require('./networkClients.js')
 const ntrip = require('./ntrip.js')
 const adhocManager = require('./adhocManager.js')
 const cloudManager = require('./cloudUpload.js')
+const flightHubController = require('./flightHubController')
 
 const winston = require('./winstonconfig')(module)
 
@@ -48,6 +49,7 @@ const fcManager = new fcManagerClass(settings, winston)
 const logManager = new flightLogger(settings, winston)
 const ntripClient = new ntrip(settings, winston)
 const cloud = new cloudManager(settings, winston)
+const flightHub = new flightHubController(settings, winston)
 
 // cleanup, if needed
 process.on('SIGINT', quitting) // run signal handler when main process exits
@@ -133,6 +135,26 @@ app.get('/api/cloudinfo', (req, res) => {
   })
 })
 
+app.get('/api/flighthubinfo', (req, res) => {
+  flightHub.getToken((token) => {
+    res.setHeader('Content-Type', 'application/json')
+    res.send(JSON.stringify({ token }))
+  })
+})
+
+app.post('/api/flighthubinfo', [check('token').not().isEmpty().trim()], (req, res) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() })
+  } else {
+    const newToken = req.body.token
+    console.log(newToken)
+    flightHub.setToken(newToken, (token) => {
+      res.setHeader('Content-Type', 'application/json')
+      res.send(JSON.stringify({ token }))
+    })
+  }
+})
 // activate or deactivate bin log upload
 app.post('/api/binlogupload', [check('doBinUpload').isBoolean(),
   check('binUploadLink').not().isEmpty().not().contains(';').not().contains('\'').not().contains('"').trim(),

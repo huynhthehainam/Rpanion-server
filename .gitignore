@@ -5,6 +5,7 @@ node_modules
 venv/
 # testing
 /coverage
+token.json
 
 # production
 /build
