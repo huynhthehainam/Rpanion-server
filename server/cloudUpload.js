@@ -12,7 +12,7 @@ class cloudUpload {
     }
 
     this.winston = winston
-
+    this.deviceToken = null
     this.topfolder = path.join(appRoot.toString(), 'flightlogs')
     this.binlogfolder = path.join(this.topfolder, 'binlogs')
 
@@ -26,32 +26,33 @@ class cloudUpload {
 
     // interval for upload checks
     this.intervalObj = setInterval(() => {
-      // console.log('Upload interval')
-      if (this.options.doBinUpload) {
-        console.log('Doing bin file. MiSmart')
-        const rsync = new Rsync()
-          .shell('ssh -i pems/svgh-mismart.pem -o StrictHostKeyChecking=no')
-          .flags('avzP')
-          .source(this.binlogfolder + '/')
-          .destination(this.options.binUploadLink)
-          .include('*.bin')
+      if (this.deviceToken) {
+        if (this.options.doBinUpload) {
+          console.log('Doing bin file. MiSmart')
+          const rsync = new Rsync()
+            .shell('ssh -i pems/svgh-mismart.pem -o StrictHostKeyChecking=no')
+            .flags('avzP')
+            .source(this.binlogfolder + '/')
+            .destination(this.options.binUploadLink + '/' + this.deviceToken)
+            .include('*.bin')
 
-        if (this.options.syncDeletions) {
-          rsync.set('delete')
-        }
-
-        // Kill old rsync and create new one
-        if (this.rsyncPid) {
-          this.rsyncPid.kill()
-        }
-
-        this.rsyncPid = rsync.execute(function (error, code, cmd) {
-        // we're done
-        // this.rsyncPid = null
-          if (error) {
-            console.log(error.stack)
+          if (this.options.syncDeletions) {
+            rsync.set('delete')
           }
-        })
+
+          // Kill old rsync and create new one
+          if (this.rsyncPid) {
+            this.rsyncPid.kill()
+          }
+
+          this.rsyncPid = rsync.execute(function (error, code, cmd) {
+          // we're done
+          // this.rsyncPid = null
+            if (error) {
+              console.log(error.stack)
+            }
+          })
+        }
       }
     }, this.options.interval * 1000)
   }

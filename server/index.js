@@ -45,11 +45,12 @@ settings.init({
 })
 
 const vManager = new videoStream(settings, winston)
+
 const fcManager = new fcManagerClass(settings, winston)
 const logManager = new flightLogger(settings, winston)
 const ntripClient = new ntrip(settings, winston)
 const cloud = new cloudManager(settings, winston)
-const flightHub = new flightHubController(settings, winston)
+const flightHub = new flightHubController(settings, winston, fcManager, cloud)
 
 // cleanup, if needed
 process.on('SIGINT', quitting) // run signal handler when main process exits
@@ -151,7 +152,7 @@ app.post('/api/flighthubinfo', [check('token').not().isEmpty().trim()], (req, re
     console.log(newToken)
     flightHub.setToken(newToken, (token) => {
       res.setHeader('Content-Type', 'application/json')
-      res.send(JSON.stringify({ token }))
+      res.send(JSON.stringify({ token, infoMessage: 'update token' }))
     })
   }
 })

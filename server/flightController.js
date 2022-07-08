@@ -273,7 +273,6 @@ class FCDetails {
     cmd.push('--log')
     cmd.push('./flightlogs/binlogs')
     cmd.push(this.activeDevice.serial.value + ':' + this.activeDevice.baud.value)
-    console.log(cmd)
 
     // check mavlink-router exists
     if (!this.validMavlinkRouter()) {
@@ -281,7 +280,6 @@ class FCDetails {
       this.winston.info('Could not find mavlink-routerd')
       return callback('Could not find mavlink-routerd', false)
     }
-
     // start mavlink-router
     this.router = spawn('mavlink-routerd', cmd)
     this.router.stdout.on('data', (data) => {
@@ -299,7 +297,7 @@ class FCDetails {
               fs.unlinkSync(this.binlog)
             }
           }
-        } catch (err) {}
+        } catch (err) { }
         const res = data.toString().split(' ')
         const curLog = (res[res.length - 1]).trim()
         this.binlog = path.join(appRoot.toString(), 'flightlogs', 'binlogs', curLog)
@@ -362,7 +360,6 @@ class FCDetails {
 
     const Binding = autoDetect()
     const ports = await Binding.list()
-    console.log('ports', ports)
     for (let i = 0, len = ports.length; i < len; i++) {
       if (ports[i].pnpId !== undefined) {
         // usb-ArduPilot_Pixhawk1-1M_32002A000847323433353231-if00
